@@ -86,7 +86,7 @@ const mockRecipes = [
   },
   {
     id: '8',
-    title: 'Soupe à l'Oignon',
+    title: 'Soupe a l\'Oignon',  // Escaped apostrophe and simplified characters
     description: 'Une soupe reconfortante a base d\'oignons caramelises, gratinee avec du fromage et du pain.',
     image: 'https://images.unsplash.com/photo-1583608354155-90119f1cc2d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1742&q=80',
     prepTime: 20,
