@@ -10,7 +10,7 @@ const mockRecipes = [
   {
     id: '1',
     title: 'Tarte aux Pommes Normande',
-    description: 'Une tarte aux pommes traditionnelle de Normandie avec une touche de calvados et de la crème fraîche.',
+    description: 'Une tarte aux pommes traditionnelle de Normandie avec une touche de calvados et de la creme fraiche.',
     image: 'https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80',
     prepTime: 30,
     cookTime: 45,
@@ -21,7 +21,7 @@ const mockRecipes = [
   {
     id: '2',
     title: 'Bœuf Bourguignon',
-    description: 'Un plat traditionnel français mijoté au vin rouge de Bourgogne avec des légumes et des herbes.',
+    description: 'Un plat traditionnel francais mijote au vin rouge de Bourgogne avec des legumes et des herbes.',
     image: 'https://images.unsplash.com/photo-1600891963935-9e69cec6e1a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1742&q=80',
     prepTime: 45,
     cookTime: 180,
@@ -32,18 +32,18 @@ const mockRecipes = [
   {
     id: '3',
     title: 'Quiche Lorraine',
-    description: 'Une tarte salée aux lardons et à la crème, spécialité de la région de Lorraine.',
+    description: 'Une tarte salee aux lardons et a la creme, specialite de la region de Lorraine.',
     image: 'https://images.unsplash.com/photo-1591985666643-9b27aa22ac62?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80',
     prepTime: 20,
     cookTime: 40,
     servings: 6,
     difficulty: 'Facile' as const,
-    category: 'Entrée',
+    category: 'Entree',
   },
   {
     id: '4',
     title: 'Ratatouille Provençale',
-    description: 'Un ragoût de légumes d'été du sud de la France, parfumé aux herbes de Provence.',
+    description: 'Un ragout de legumes d\'ete du sud de la France, parfume aux herbes de Provence.',
     image: 'https://images.unsplash.com/photo-1572453800999-e8d2d1589b7c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80',
     prepTime: 30,
     cookTime: 60,
@@ -54,7 +54,7 @@ const mockRecipes = [
   {
     id: '5',
     title: 'Mousse au Chocolat',
-    description: 'Un dessert léger et aérien au chocolat noir, parfait pour terminer un repas.',
+    description: 'Un dessert leger et aerien au chocolat noir, parfait pour terminer un repas.',
     image: 'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1650&q=80',
     prepTime: 20,
     cookTime: 240,
@@ -65,7 +65,7 @@ const mockRecipes = [
   {
     id: '6',
     title: 'Coq au Vin',
-    description: 'Un plat traditionnel français où le poulet est mijoté dans du vin rouge avec des champignons et des lardons.',
+    description: 'Un plat traditionnel francais ou le poulet est mijote dans du vin rouge avec des champignons et des lardons.',
     image: 'https://images.unsplash.com/photo-1592415499556-74fcb9321a8e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1675&q=80',
     prepTime: 40,
     cookTime: 90,
@@ -76,7 +76,7 @@ const mockRecipes = [
   {
     id: '7',
     title: 'Crêpes Sucrées',
-    description: 'Des crêpes fines et légères, parfaites pour le petit-déjeuner ou un dessert simple.',
+    description: 'Des crepes fines et legeres, parfaites pour le petit-dejeuner ou un dessert simple.',
     image: 'https://images.unsplash.com/photo-1519676867240-f03562e64548?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1756&q=80',
     prepTime: 10,
     cookTime: 20,
@@ -87,13 +87,13 @@ const mockRecipes = [
   {
     id: '8',
     title: 'Soupe à l'Oignon',
-    description: 'Une soupe réconfortante à base d'oignons caramélisés, gratinée avec du fromage et du pain.',
+    description: 'Une soupe reconfortante a base d\'oignons caramelises, gratinee avec du fromage et du pain.',
     image: 'https://images.unsplash.com/photo-1583608354155-90119f1cc2d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1742&q=80',
     prepTime: 20,
     cookTime: 60,
     servings: 4,
     difficulty: 'Moyen' as const,
-    category: 'Entrée',
+    category: 'Entree',
   },
 ];
 
