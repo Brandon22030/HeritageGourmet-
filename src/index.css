@@ -1,101 +1,110 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Raleway:wght@300;400;500;600&family=Caveat&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 48 63% 95%;
+    --foreground: 14 22% 29%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 48 63% 95%;
+    --card-foreground: 14 22% 29%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 48 63% 95%;
+    --popover-foreground: 14 22% 29%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 6 78% 57%;
+    --primary-foreground: 48 63% 95%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 37 89% 51%;
+    --secondary-foreground: 48 63% 95%;
+
+    --accent: 146 61% 42%;
+    --accent-foreground: 48 63% 95%;
 
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --muted-foreground: 14 22% 49%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 48 63% 95%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 14 22% 79%;
+    --input: 14 22% 79%;
+    --ring: 6 78% 57%;
 
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --radius: 0.75rem;
   }
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
+  html {
+    @apply scroll-smooth;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-cream text-brown font-sans;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+
+  .handwritten {
+    @apply font-handwritten;
+  }
+
+  .paper-bg {
+    @apply bg-cream bg-paper-texture bg-repeat;
+  }
+
+  .recipe-card {
+    @apply bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-gray-200;
+  }
+
+  .recipe-card-img {
+    @apply w-full h-48 object-cover;
+  }
+
+  .btn-primary {
+    @apply bg-terracotta text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply bg-honey text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors;
+  }
+  
+  .btn-accent {
+    @apply bg-basil text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors;
+  }
+}
+
+@layer components {
+  .nav-link {
+    @apply relative px-2 py-1 text-brown hover:text-terracotta transition-colors duration-200;
+  }
+  
+  .nav-link::after {
+    @apply content-[''] absolute w-0 h-[2px] bg-terracotta left-0 bottom-0 transition-all duration-300 ease-in-out;
+  }
+  
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+
+  .recipe-tag {
+    @apply inline-block px-3 py-1 rounded-full text-xs font-medium mr-1 mb-1;
+  }
+  
+  .tag-category {
+    @apply bg-honey/20 text-brown;
+  }
+  
+  .tag-difficulty {
+    @apply bg-terracotta/20 text-brown;
+  }
+  
+  .tag-time {
+    @apply bg-basil/20 text-brown;
   }
 }
