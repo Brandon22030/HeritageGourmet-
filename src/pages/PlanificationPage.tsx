@@ -71,7 +71,10 @@ const PlanificationPage = () => {
         .lte('date', endDate);
       
       if (error) throw error;
-      setMealPlans(data || []);
+      
+      if (data) {
+        setMealPlans(data as MealPlan[]);
+      }
     } catch (error) {
       console.error('Erreur lors du chargement des plans de repas:', error);
       toast({

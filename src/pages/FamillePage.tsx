@@ -36,7 +36,7 @@ const FamillePage = () => {
         .from('family_group_members')
         .select(`
           group_id,
-          family_groups (
+          family_groups:group_id (
             id,
             name,
             description
@@ -46,45 +46,64 @@ const FamillePage = () => {
       
       if (memberError) throw memberError;
       
-      // Traiter les données pour obtenir le format souhaité
-      const groupIds = memberGroups.map((item) => item.family_groups.id);
+      if (!memberGroups || memberGroups.length === 0) {
+        setFamilyGroups([]);
+        setIsLoading(false);
+        return;
+      }
       
-      // Charger le nombre de recettes par groupe
-      const { data: recipeCounts, error: recipeError } = await supabase
-        .from('family_recipes')
-        .select('group_id, count')
-        .in('group_id', groupIds)
-        .order('count', { ascending: false })
-        .groupby('group_id');
+      // Extraire les IDs des groupes
+      const groupIds = memberGroups.map(item => item.family_groups.id);
       
-      if (recipeError) throw recipeError;
-      
-      // Charger le nombre de membres par groupe
-      const { data: memberCounts, error: countError } = await supabase
-        .from('family_group_members')
-        .select('group_id, count')
-        .in('group_id', groupIds)
-        .order('count', { ascending: false })
-        .groupby('group_id');
-      
-      if (countError) throw countError;
-      
-      // Construire la liste finale avec les compteurs
+      // Construire la liste des groupes avec des compteurs par défaut
       const groupsWithCounts = memberGroups.map(item => {
         const group = item.family_groups;
-        const recipeCount = recipeCounts.find(r => r.group_id === group.id)?.count || 0;
-        const memberCount = memberCounts.find(m => m.group_id === group.id)?.count || 0;
-        
         return {
           id: group.id,
           name: group.name,
           description: group.description,
-          recipeCount,
-          memberCount
+          recipeCount: 0,
+          memberCount: 0
         };
       });
       
-      setFamilyGroups(groupsWithCounts);
+      // Pour chaque groupe, compter le nombre de membres
+      const memberCountPromises = groupIds.map(async (groupId) => {
+        const { count, error } = await supabase
+          .from('family_group_members')
+          .select('id', { count: 'exact', head: true })
+          .eq('group_id', groupId);
+          
+        return { groupId, count: count || 0, error };
+      });
+      
+      // Pour chaque groupe, compter le nombre de recettes
+      const recipeCountPromises = groupIds.map(async (groupId) => {
+        const { count, error } = await supabase
+          .from('family_recipes')
+          .select('id', { count: 'exact', head: true })
+          .eq('family_group_id', groupId);
+          
+        return { groupId, count: count || 0, error };
+      });
+      
+      // Attendre que tous les comptages soient terminés
+      const memberCounts = await Promise.all(memberCountPromises);
+      const recipeCounts = await Promise.all(recipeCountPromises);
+      
+      // Mettre à jour les compteurs dans la liste des groupes
+      const updatedGroups = groupsWithCounts.map(group => {
+        const memberCount = memberCounts.find(m => m.groupId === group.id)?.count || 0;
+        const recipeCount = recipeCounts.find(r => r.groupId === group.id)?.count || 0;
+        
+        return {
+          ...group,
+          memberCount,
+          recipeCount
+        };
+      });
+      
+      setFamilyGroups(updatedGroups);
     } catch (error) {
       console.error('Erreur lors du chargement des groupes familiaux:', error);
       toast({
@@ -129,19 +148,51 @@ const FamillePage = () => {
     setIsJoinModalOpen(true);
   };
 
-  const handleShareGroup = (groupId: string) => {
-    // Dans une implémentation complète, cela générerait un code d'invitation
-    toast({
-      title: 'Invitation générée',
-      description: 'Un nouveau code d\'invitation a été créé et copié dans votre presse-papier',
-    });
+  const handleShareGroup = async (groupId: string) => {
+    if (!user) return;
+    
+    try {
+      // Générer un code d'invitation unique
+      const inviteCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+      
+      // Définir une date d'expiration (par exemple, dans 7 jours)
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 7);
+      
+      // Enregistrer le code d'invitation dans la base de données
+      const { error } = await supabase
+        .from('family_group_invites')
+        .insert({
+          group_id: groupId,
+          code: inviteCode,
+          expiry_date: expiryDate.toISOString(),
+          created_by: user.id
+        });
+      
+      if (error) throw error;
+      
+      // Copier le code dans le presse-papier
+      await navigator.clipboard.writeText(inviteCode);
+      
+      toast({
+        title: 'Invitation générée',
+        description: `Code: ${inviteCode} (valide pendant 7 jours, copié dans le presse-papier)`,
+      });
+    } catch (error) {
+      console.error('Erreur lors de la génération du code:', error);
+      toast({
+        title: 'Erreur',
+        description: 'Impossible de générer un code d\'invitation',
+        variant: 'destructive',
+      });
+    }
   };
 
   const handleViewRecipes = (groupId: string) => {
-    // Navigation vers les recettes du groupe
+    // Fonctionnalité à implémenter
     toast({
-      title: 'Navigation',
-      description: 'Affichage des recettes du groupe (à implémenter)',
+      title: 'Fonctionnalité à venir',
+      description: 'Cette fonctionnalité sera bientôt disponible',
     });
   };
 
