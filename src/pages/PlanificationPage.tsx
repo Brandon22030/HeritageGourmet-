@@ -72,9 +72,7 @@ const PlanificationPage = () => {
       
       if (error) throw error;
       
-      if (data) {
-        setMealPlans(data as MealPlan[]);
-      }
+      setMealPlans(data || []);
     } catch (error) {
       console.error('Erreur lors du chargement des plans de repas:', error);
       toast({
