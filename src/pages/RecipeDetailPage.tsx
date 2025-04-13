@@ -65,7 +65,25 @@ const RecipeDetailPage = () => {
       
       if (error) throw error;
       
-      setRecipe(data);
+      // Transform the data to match RecipeDetail interface
+      const recipeData: RecipeDetail = {
+        id: data.id,
+        title: data.title,
+        description: data.description || '',
+        image_url: data.image_url || '',
+        prep_time: data.prep_time || 0,
+        cook_time: data.cook_time || 0,
+        servings: data.servings || 0,
+        difficulty: data.difficulty || 'medium',
+        category: data.category || '',
+        user_id: data.user_id,
+        // Parse JSON fields and provide fallbacks if null or invalid
+        ingredients: Array.isArray(data.ingredients) ? data.ingredients : [],
+        instructions: Array.isArray(data.instructions) ? data.instructions : [],
+        created_at: data.created_at,
+      };
+      
+      setRecipe(recipeData);
     } catch (error) {
       console.error('Erreur lors de la récupération de la recette:', error);
       toast({
