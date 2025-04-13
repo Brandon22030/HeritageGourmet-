@@ -77,9 +77,22 @@ const RecipeDetailPage = () => {
         difficulty: data.difficulty || 'medium',
         category: data.category || '',
         user_id: data.user_id,
-        // Parse JSON fields and provide fallbacks if null or invalid
-        ingredients: Array.isArray(data.ingredients) ? data.ingredients : [],
-        instructions: Array.isArray(data.instructions) ? data.instructions : [],
+        // Parse JSON fields to ensure they match the expected types
+        ingredients: Array.isArray(data.ingredients) 
+          ? data.ingredients.map((item: any): RecipeIngredient => ({
+              id: item.id || `ing-${Math.random().toString(36).substring(2, 9)}`,
+              name: item.name || '',
+              quantity: item.quantity || '',
+              unit: item.unit || ''
+            }))
+          : [],
+        instructions: Array.isArray(data.instructions)
+          ? data.instructions.map((item: any): RecipeInstruction => ({
+              id: item.id || `step-${Math.random().toString(36).substring(2, 9)}`,
+              step: typeof item.step === 'number' ? item.step : 0,
+              text: item.text || ''
+            }))
+          : [],
         created_at: data.created_at,
       };
       
