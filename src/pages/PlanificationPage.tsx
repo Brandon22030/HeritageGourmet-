@@ -7,12 +7,14 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import AddMealModal from '@/components/planification/AddMealModal';
 
 interface MealPlan {
   id: string;
   date: string;
   meal_type: string;
   recipe_id: string | null;
+  custom_meal: string | null;
   notes: string | null;
   recipe?: {
     title: string;
@@ -26,6 +28,9 @@ const PlanificationPage = () => {
   const [weekDates, setWeekDates] = useState<Date[]>([]);
   const [mealPlans, setMealPlans] = useState<MealPlan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedMealType, setSelectedMealType] = useState<string>('');
   const { user } = useAuth();
 
   // Fonction pour obtenir les dates de la semaine à partir de la date actuelle
@@ -40,12 +45,6 @@ const PlanificationPage = () => {
   }, [currentDate]);
 
   // Charger les plans de repas pour l'utilisateur connecté
-  useEffect(() => {
-    if (user) {
-      fetchMealPlans();
-    }
-  }, [user, weekDates]);
-
   const fetchMealPlans = async () => {
     if (!user) return;
     
@@ -61,6 +60,7 @@ const PlanificationPage = () => {
           date,
           meal_type,
           recipe_id,
+          custom_meal,
           notes,
           recipes (
             title
@@ -84,6 +84,12 @@ const PlanificationPage = () => {
     }
   };
 
+  useEffect(() => {
+    if (user && weekDates.length > 0) {
+      fetchMealPlans();
+    }
+  }, [user, weekDates]);
+
   // Navigation entre les semaines
   const previousWeek = () => {
     setCurrentDate(addDays(currentDate, -7));
@@ -101,7 +107,7 @@ const PlanificationPage = () => {
     );
   };
 
-  // Placeholder pour l'ajout d'un repas
+  // Ouvrir la modal d'ajout de repas
   const handleAddMeal = (date: Date, mealType: string) => {
     if (!user) {
       toast({
@@ -112,11 +118,39 @@ const PlanificationPage = () => {
       return;
     }
     
-    // Dans une vraie application, ouvrir une modal pour sélectionner une recette
-    toast({
-      title: 'Fonctionnalité à venir',
-      description: `Ajout d'un repas pour le ${format(date, 'dd MMMM', { locale: fr })} - ${mealType}`,
-    });
+    setSelectedDate(date);
+    setSelectedMealType(mealType);
+    setIsAddModalOpen(true);
+  };
+
+  // Supprimer un repas planifié
+  const handleDeleteMeal = async (mealId: string) => {
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase
+        .from('meal_plans')
+        .delete()
+        .eq('id', mealId)
+        .eq('user_id', user.id);
+      
+      if (error) throw error;
+      
+      // Mettre à jour la liste locale
+      setMealPlans(prev => prev.filter(plan => plan.id !== mealId));
+      
+      toast({
+        title: 'Repas supprimé',
+        description: 'Le repas a été retiré de votre planning',
+      });
+    } catch (error) {
+      console.error('Erreur lors de la suppression du repas:', error);
+      toast({
+        title: 'Erreur',
+        description: 'Impossible de supprimer ce repas',
+        variant: 'destructive',
+      });
+    }
   };
 
   return (
@@ -172,8 +206,18 @@ const PlanificationPage = () => {
                         <td key={`${date.toISOString()}-${mealType}`} className="px-4 py-2 border">
                           {mealPlan ? (
                             <div className="p-2 bg-cream rounded-md">
-                              <p className="font-medium">{mealPlan.recipe?.title || 'Repas planifié'}</p>
+                              <p className="font-medium">
+                                {mealPlan.recipe?.title || mealPlan.custom_meal || 'Repas planifié'}
+                              </p>
                               {mealPlan.notes && <p className="text-sm text-gray-600">{mealPlan.notes}</p>}
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="text-xs text-gray-500 mt-1 h-6 px-2"
+                                onClick={() => handleDeleteMeal(mealPlan.id)}
+                              >
+                                Supprimer
+                              </Button>
                             </div>
                           ) : (
                             <Button
@@ -196,6 +240,17 @@ const PlanificationPage = () => {
           </div>
         )}
       </div>
+      
+      {/* Modal d'ajout de repas */}
+      {selectedDate && (
+        <AddMealModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          onSuccess={fetchMealPlans}
+          date={selectedDate}
+          mealType={selectedMealType}
+        />
+      )}
     </div>
   );
 };

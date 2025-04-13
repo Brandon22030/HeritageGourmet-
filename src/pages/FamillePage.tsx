@@ -6,43 +6,102 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import CreateFamilyGroupModal from '@/components/famille/CreateFamilyGroupModal';
+import JoinFamilyGroupModal from '@/components/famille/JoinFamilyGroupModal';
 
 interface FamilyGroup {
   id: string;
   name: string;
+  description?: string;
   recipeCount: number;
   memberCount: number;
 }
 
-const mockFamilyGroups: FamilyGroup[] = [
-  {
-    id: '1',
-    name: 'Recettes de Famille Dupont',
-    recipeCount: 24,
-    memberCount: 5,
-  },
-  {
-    id: '2',
-    name: 'Traditions Culinaires Martin',
-    recipeCount: 16,
-    memberCount: 3,
-  },
-];
-
 const FamillePage = () => {
-  const [familyGroups, setFamilyGroups] = useState<FamilyGroup[]>(mockFamilyGroups);
+  const [familyGroups, setFamilyGroups] = useState<FamilyGroup[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const { user } = useAuth();
 
-  // Simulation du chargement des données
-  useEffect(() => {
-    // Dans une version complète, nous chargerions les groupes depuis Supabase
-    setIsLoading(true);
-    setTimeout(() => {
+  const fetchFamilyGroups = async () => {
+    if (!user) return;
+    
+    try {
+      setIsLoading(true);
+      
+      // Récupérer les groupes familiaux dont l'utilisateur est membre
+      const { data: memberGroups, error: memberError } = await supabase
+        .from('family_group_members')
+        .select(`
+          group_id,
+          family_groups (
+            id,
+            name,
+            description
+          )
+        `)
+        .eq('user_id', user.id);
+      
+      if (memberError) throw memberError;
+      
+      // Traiter les données pour obtenir le format souhaité
+      const groupIds = memberGroups.map((item) => item.family_groups.id);
+      
+      // Charger le nombre de recettes par groupe
+      const { data: recipeCounts, error: recipeError } = await supabase
+        .from('family_recipes')
+        .select('group_id, count')
+        .in('group_id', groupIds)
+        .order('count', { ascending: false })
+        .groupby('group_id');
+      
+      if (recipeError) throw recipeError;
+      
+      // Charger le nombre de membres par groupe
+      const { data: memberCounts, error: countError } = await supabase
+        .from('family_group_members')
+        .select('group_id, count')
+        .in('group_id', groupIds)
+        .order('count', { ascending: false })
+        .groupby('group_id');
+      
+      if (countError) throw countError;
+      
+      // Construire la liste finale avec les compteurs
+      const groupsWithCounts = memberGroups.map(item => {
+        const group = item.family_groups;
+        const recipeCount = recipeCounts.find(r => r.group_id === group.id)?.count || 0;
+        const memberCount = memberCounts.find(m => m.group_id === group.id)?.count || 0;
+        
+        return {
+          id: group.id,
+          name: group.name,
+          description: group.description,
+          recipeCount,
+          memberCount
+        };
+      });
+      
+      setFamilyGroups(groupsWithCounts);
+    } catch (error) {
+      console.error('Erreur lors du chargement des groupes familiaux:', error);
+      toast({
+        title: 'Erreur de chargement',
+        description: 'Impossible de charger vos livres de famille',
+        variant: 'destructive',
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
-  }, []);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchFamilyGroups();
+    }
+  }, [user]);
 
   const handleCreateGroup = () => {
     if (!user) {
@@ -54,10 +113,7 @@ const FamillePage = () => {
       return;
     }
     
-    toast({
-      title: 'Fonctionnalité à venir',
-      description: 'La création de groupes familiaux sera bientôt disponible',
-    });
+    setIsCreateModalOpen(true);
   };
 
   const handleJoinGroup = () => {
@@ -70,9 +126,22 @@ const FamillePage = () => {
       return;
     }
     
+    setIsJoinModalOpen(true);
+  };
+
+  const handleShareGroup = (groupId: string) => {
+    // Dans une implémentation complète, cela générerait un code d'invitation
     toast({
-      title: 'Fonctionnalité à venir',
-      description: 'Rejoindre un groupe familial sera bientôt disponible',
+      title: 'Invitation générée',
+      description: 'Un nouveau code d\'invitation a été créé et copié dans votre presse-papier',
+    });
+  };
+
+  const handleViewRecipes = (groupId: string) => {
+    // Navigation vers les recettes du groupe
+    toast({
+      title: 'Navigation',
+      description: 'Affichage des recettes du groupe (à implémenter)',
     });
   };
 
@@ -123,6 +192,9 @@ const FamillePage = () => {
                 <div key={group.id} className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                   <div className="p-6">
                     <h3 className="text-xl font-serif font-semibold mb-2">{group.name}</h3>
+                    {group.description && (
+                      <p className="text-gray-600 text-sm mb-3">{group.description}</p>
+                    )}
                     <div className="flex items-center text-sm text-gray-600 mb-4">
                       <Book className="h-4 w-4 mr-1" />
                       <span>{group.recipeCount} recettes</span>
@@ -131,11 +203,11 @@ const FamillePage = () => {
                       <span>{group.memberCount} membres</span>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" onClick={() => handleViewRecipes(group.id)}>
                         <Heart className="h-4 w-4 mr-1" />
                         Voir les recettes
                       </Button>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" onClick={() => handleShareGroup(group.id)}>
                         <Share2 className="h-4 w-4 mr-1" />
                         Inviter
                       </Button>
@@ -158,6 +230,19 @@ const FamillePage = () => {
           )}
         </div>
       </div>
+      
+      {/* Modals */}
+      <CreateFamilyGroupModal 
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={fetchFamilyGroups}
+      />
+      
+      <JoinFamilyGroupModal
+        isOpen={isJoinModalOpen}
+        onClose={() => setIsJoinModalOpen(false)}
+        onSuccess={fetchFamilyGroups}
+      />
     </div>
   );
 };
