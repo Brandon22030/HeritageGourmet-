@@ -14,32 +14,45 @@ import FamillePage from "./pages/FamillePage";
 import RecipeDetailPage from "./pages/RecipeDetailPage";
 import AuthPage from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
+import React from "react";
 
-const queryClient = new QueryClient();
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AuthProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <MainLayout>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/bibliotheque" element={<RecipeLibrary />} />
-              <Route path="/explorer" element={<ExplorerPage />} />
-              <Route path="/planification" element={<PlanificationPage />} />
-              <Route path="/famille" element={<FamillePage />} />
-              <Route path="/recette/:id" element={<RecipeDetailPage />} />
-              <Route path="/auth" element={<AuthPage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </MainLayout>
-        </BrowserRouter>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  return (
+    <React.StrictMode>
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <MainLayout>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/bibliotheque" element={<RecipeLibrary />} />
+                  <Route path="/explorer" element={<ExplorerPage />} />
+                  <Route path="/planification" element={<PlanificationPage />} />
+                  <Route path="/famille" element={<FamillePage />} />
+                  <Route path="/recette/:id" element={<RecipeDetailPage />} />
+                  <Route path="/auth" element={<AuthPage />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </MainLayout>
+            </TooltipProvider>
+          </AuthProvider>
+        </QueryClientProvider>
+      </BrowserRouter>
+    </React.StrictMode>
+  );
+};
 
 export default App;
