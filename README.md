@@ -1,73 +1,67 @@
-# Welcome to your Lovable project
+# HeritageGourmet
 
-## Project info
+## À propos du projet
 
-**URL**: https://lovable.dev/projects/5df231d3-c317-41da-b1c2-e83bea21af5a
+HeritageGourmet est une application web moderne dédiée à la préservation et au partage des recettes familiales. Elle permet aux familles de numériser, organiser et transmettre leur patrimoine culinaire tout en facilitant la planification des repas au quotidien.
 
-## How can I edit this code?
+## Fonctionnalités principales
 
-There are several ways of editing your application.
+- **Bibliothèque de recettes** : Stockage et organisation de recettes familiales
+- **Gestion familiale** : Création de profils familiaux et partage de recettes
+- **Planification des repas** : Calendrier interactif pour la planification hebdomadaire
+- **Interface responsive** : Expérience utilisateur optimisée sur tous les appareils
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/5df231d3-c317-41da-b1c2-e83bea21af5a) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
+## Technologies utilisées
 
 - Vite
 - TypeScript
 - React
 - shadcn-ui
 - Tailwind CSS
+- Supabase (Base de données et authentification)
 
-## How can I deploy this project?
+## Installation et démarrage
 
-Simply open [Lovable](https://lovable.dev/projects/5df231d3-c317-41da-b1c2-e83bea21af5a) and click on Share -> Publish.
+### Prérequis
 
-## Can I connect a custom domain to my Lovable project?
+- Node.js & npm - [Installation avec nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-Yes it is!
+### Étapes d'installation
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```sh
+# 1. Cloner le dépôt
+git clone <URL_DU_DEPOT>
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+# 2. Accéder au répertoire du projet
+cd HeritageGourmet
+
+# 3. Installer les dépendances
+npm install
+
+# 4. Démarrer le serveur de développement
+npm run dev
+```
+
+## Structure du projet
+
+```
+src/
+  ├── components/     # Composants React réutilisables
+  ├── contexts/       # Contextes React (auth, etc.)
+  ├── hooks/          # Hooks personnalisés
+  ├── pages/          # Pages de l'application
+  ├── integrations/   # Intégrations externes (Supabase)
+  └── lib/            # Utilitaires et configurations
+```
+
+## Contribution
+
+1. Fork le projet
+2. Créez votre branche de fonctionnalité (`git checkout -b feature/NouvelleFeature`)
+3. Committez vos changements (`git commit -m 'Ajout de NouvelleFeature'`)
+4. Push vers la branche (`git push origin feature/NouvelleFeature`)
+5. Ouvrez une Pull Request
+
+## Licence
+
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
